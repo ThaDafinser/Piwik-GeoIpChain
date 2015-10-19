@@ -7,21 +7,18 @@ use Piwik\DataTable\Renderer\Json;
 use Piwik\Http;
 use Piwik\IP;
 use Piwik\Piwik;
-use Piwik\Plugins\UserCountry\LocationProvider\GeoIp\ServerBased;
-use Piwik\Plugins\UserCountry\LocationProvider\GeoIp;
-use Piwik\Plugins\UserCountry\LocationProvider;
-use Piwik\Plugins\UserCountry\LocationProvider\DefaultProvider;
-use Piwik\Plugins\UserCountry\LocationProvider\GeoIp\Pecl;
 use Piwik\View;
 use Geocoder\Exception\NoResult;
 use Piwik\Plugins\GeoIpChain\Provider\FileAwareProvider;
 use Geocoder\Provider\LocaleAwareProvider;
 use Geocoder\Exception\UnsupportedOperation;
+use Piwik\Plugins\UserCountry\Piwik\Plugins\UserCountry;
 
 /**
  */
 class Controller extends \Piwik\Plugin\ControllerAdmin
 {
+
     private function getDefaultIp()
     {
         return IP::getIpFromHeader();
@@ -52,7 +49,7 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
         
         $view = new View('@GeoIpChain/adminIndex');
         
-        $providerHandler = new Provider();
+        $providerHandler = new LocationProvider();
         
         $providers = [];
         foreach ($providerHandler->getProviders() as $provider) {
@@ -84,9 +81,7 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
                     $firstResult = $result->first();
                     
                     $data['result'] = $firstResult;
-                } catch (NoResult $ex) {
-                } catch (UnsupportedOperation $ex) {
-                }
+                } catch (NoResult $ex) {} catch (UnsupportedOperation $ex) {}
             }
             
             $providers[] = $data;
