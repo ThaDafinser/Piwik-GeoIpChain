@@ -41,7 +41,7 @@ Go to `Settings -> GeoIpChain` to see the current used default filename
   - [ ] active/deactive providers
   - [ ] order the priority of the providers
   - [ ] change the data file
-[ ] know which provider provides which data (lat/lang, country, street, ...)
-[ ] define all columns
-[ ] add the result it to the `visitor` data
-[ ] ...and many more (try/catch, caching, ...)
+- [ ] know which provider provides which data (lat/lang, country, street, ...)
+- [ ] define all columns
+- [ ] add the result it to the `visitor` data
+. [ ] ...and many more (try/catch, caching, ...)
