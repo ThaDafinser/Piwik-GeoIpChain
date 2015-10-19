@@ -1,0 +1,84 @@
+{% extends 'admin.twig' %}
+
+{% set title %}{{ 'GeoIpChain'|translate }}{% endset %}
+
+{% set errorIcon %} <span class="icon-error"></span> {% endset %}
+{% set warningIcon %} <span class="icon-warning"></span> {% endset %}
+{% set okIcon %} <span class="icon-ok"></span> {% endset %}
+    
+{% block content %}
+{% import 'macros.twig' as piwik %}
+
+<h2 piwik-enriched-headline>{{ title }}</h2>
+
+<form method="post" action="{{ linkTo({'module':'GeoIpChain', 'action':'adminIndex'}) }}">
+usedIp <input type="text" id="usedIp" name="usedIp" value="{{ usedIp }}" />
+<input type="button" value="{{ defaultIp }}" onclick="$('#usedIp').val($(this).val());" /> <br />
+
+usedAcceptLanguage <input type="text" id="usedAcceptLanguage" name="usedAcceptLanguage" value="{{ usedAcceptLanguage }}" />
+<input type="button" value="{{ defaultAcceptLanguage }}" onclick="$('#usedAcceptLanguage').val($(this).val());" /> <br />
+
+<input type="submit" value="Submit" />
+</form>
+
+<table class="simple-table">
+    <tr>
+        <th>Name</th>
+        <th>Is working</th>
+        <th>IPv4 support</th>
+        <th>IPv6 support</th>
+        <th>Used data file</th>
+        <th>Result</th>
+    </tr>
+    
+    {% for provider in providers %}
+        <tr>
+            <td>{{ provider.name }}</td>
+            <td>
+                {% if provider.isWorking == true %}
+                    {{ okIcon }}
+                {% else %}
+                    {{ errorIcon }}
+                {% endif %}
+            </td>
+            <td>
+                {% if provider.doesSupportIpV4 == true %}
+                    {{ okIcon }}
+                {% else %}
+                    {{ errorIcon }}
+                {% endif %}
+            </td>
+            <td>
+                {% if provider.doesSupportIpV6 == true %}
+                    {{ okIcon }}
+                {% else %}
+                    {{ errorIcon }}
+                {% endif %}
+            </td>
+            <td>
+                {{ provider.usedFile }}
+            </td>
+            <td>
+                {% if provider.result == false %}
+                    {{ warningIcon }} No result found
+                {% else %}
+                    Latitude {{ provider.result.getLatitude }} <br />
+                    Longitude {{ provider.result.getLongitude }} <br />
+                    Timezone {{ provider.result.getTimezone }} <br />
+                    
+                    Country name {{ provider.result.getCountry.getName }} <br />
+                    Country code {{ provider.result.getCountry.getCode }} <br />
+                    
+                    Sublocality {{ provider.result.getSubLocality }} <br />
+                    Postal code {{ provider.result.getPostalCode }} <br />
+                    Locality {{ provider.result.getLocality }} <br />
+                    Streetname {{ provider.result.getStreetName }} <br />
+                    Streetnumber {{ provider.result.getStreetNumber }} <br />
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    
+</table>
+
+{% endblock %}
