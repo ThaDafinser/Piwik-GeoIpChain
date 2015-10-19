@@ -6,6 +6,8 @@ This plugin comes out of the idea here https://github.com/piwik/piwik/issues/643
 
 Multiple GeoIp provider were not currently possible until yet - with this plugin you can defined as many as you want!
 
+![alt tag](screenshots/screen1.jpg)
+
 ## Installaion
 Download this plugin and put it with the name `GeoIpChain` in your `plugins` folder
 
