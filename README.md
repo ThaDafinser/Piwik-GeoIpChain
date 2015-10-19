@@ -36,11 +36,11 @@ Data datafiles are searched in `YOUR_PIWIK/data/...
 Go to `Settings -> GeoIpChain` to see the current used default filename
 
 ## TODO
-[x] create a overview + testpage in the admin section (Settings -> GeoIpChain)
-[ ] configuration GUI
-- [ ] active/deactive providers
-- [ ] order the priority of the providers
-- [ ] change the data file
+- [x] create a overview + testpage in the admin section (Settings -> GeoIpChain)
+- [ ] configuration GUI
+  - [ ] active/deactive providers
+  - [ ] order the priority of the providers
+  - [ ] change the data file
 [ ] know which provider provides which data (lat/lang, country, street, ...)
 [ ] define all columns
 [ ] add the result it to the `visitor` data
