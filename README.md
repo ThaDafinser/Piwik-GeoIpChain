@@ -46,4 +46,5 @@ Go to `Settings -> GeoIpChain` to see the current used default filename
 - [ ] know which provider provides which data (lat/lang, country, street, ...)
 - [ ] define all columns
 - [ ] add the result it to the `visitor` data
-. [ ] ...and many more (try/catch, caching, ...)
+  - [x] added one field: latitude
+- [ ] ...and many more (try/catch, caching, ...)
