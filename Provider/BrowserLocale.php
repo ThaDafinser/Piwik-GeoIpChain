@@ -5,6 +5,7 @@ use Geocoder\Provider\LocaleAwareProvider;
 use Geocoder\Provider\LocaleTrait;
 use Geocoder\Exception\NoResult;
 use Geocoder\Exception\UnsupportedOperation;
+use Piwik\Plugins\GeoIpChain\LocationProvider;
 
 class BrowserLocale extends AbstractProvider implements LocaleAwareProvider
 {
@@ -23,6 +24,14 @@ class BrowserLocale extends AbstractProvider implements LocaleAwareProvider
     public function doesSupportIpV6()
     {
         return false;
+    }
+
+    public function getSupportedFields()
+    {
+        return [
+            LocationProvider::COUNTRY_CODE,
+            LocationProvider::COUNTRY_NAME
+        ];
     }
 
     /**

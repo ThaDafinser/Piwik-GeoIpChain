@@ -10,7 +10,25 @@ use Geocoder\Provider\Chain;
 class LocationProvider
 {
 
-    const LATITUDE_KEY = 'latitude';
+    const LATITUDE = 'latitude';
+
+    const LONGITUDE = 'longitude';
+
+    const STREET_NUMBER = 'streetNumber';
+
+    const STREET_NAME = 'streetName';
+
+    const LOCALITY = 'locality';
+
+    const POSTAL_CODE = 'postalCode';
+
+    const SUB_LOCALITY = 'subLocality';
+
+    const COUNTRY_CODE = 'countryCode';
+
+    const COUNTRY_NAME = 'country';
+
+    const TIMEZONE = 'timezone';
 
     private $locale;
 
@@ -124,7 +142,8 @@ class LocationProvider
         $firstResult = $result->first();
         
         return [
-            self::LATITUDE_KEY => $firstResult->getLatitude()
+            self::LATITUDE => $firstResult->getLatitude(),
+            self::LONGITUDE => $firstResult->getLongitude()
         ];
     }
 }

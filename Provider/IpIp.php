@@ -5,6 +5,8 @@ use Geocoder\Exception\NoResult;
 use Geocoder\Exception\UnsupportedOperation;
 use Geocoder\Provider\Provider;
 use Piwik\Plugins\GeoIpChain\Provider\Adapter\IpIp as IpIpAdapter;
+use Piwik\Plugins\GeoIpChain\LocationProvider;
+use GeoIp2\Record\Location;
 
 class IpIp extends AbstractProvider implements Provider, FileAwareProvider
 {
@@ -31,6 +33,15 @@ class IpIp extends AbstractProvider implements Provider, FileAwareProvider
         }
         
         return true;
+    }
+
+    public function getSupportedFields()
+    {
+        return [
+            LocationProvider::COUNTRY_NAME,
+            
+            LocationProvider::SUB_LOCALITY
+        ];
     }
 
     /**

@@ -28,14 +28,14 @@ class Latitude extends AbstractVisitDimension
      */
     public function onNewVisit(Request $request, Visitor $visitor, $action)
     {
-        $result = $this->getLocationDetail(LocationProvider::LATITUDE_KEY, $visitor, $request);
+        $result = $this->getLocationDetail(LocationProvider::LATITUDE, $visitor, $request);
         
         return $result;
     }
 
     public function onExistingVisit(Request $request, Visitor $visitor, $action)
     {
-        $result = $this->getLocationDetail(LocationProvider::LATITUDE_KEY, $visitor, $request);
+        $result = $this->getLocationDetail(LocationProvider::LATITUDE, $visitor, $request);
         
         return $result;
     }

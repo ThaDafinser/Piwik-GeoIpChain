@@ -27,13 +27,16 @@ usedAcceptLanguage <input type="text" id="usedAcceptLanguage" name="usedAcceptLa
         <th>Is working</th>
         <th>IPv4 support</th>
         <th>IPv6 support</th>
-        <th>Used data file</th>
+        <th>Used file</th>
+        <th>Supported fields</th>
         <th>Result</th>
     </tr>
     
     {% for provider in providers %}
         <tr>
+        
             <td>{{ provider.name }}</td>
+            
             <td>
                 {% if provider.isWorking == true %}
                     {{ okIcon }}
@@ -41,6 +44,7 @@ usedAcceptLanguage <input type="text" id="usedAcceptLanguage" name="usedAcceptLa
                     {{ errorIcon }}
                 {% endif %}
             </td>
+            
             <td>
                 {% if provider.doesSupportIpV4 == true %}
                     {{ okIcon }}
@@ -48,6 +52,7 @@ usedAcceptLanguage <input type="text" id="usedAcceptLanguage" name="usedAcceptLa
                     {{ errorIcon }}
                 {% endif %}
             </td>
+            
             <td>
                 {% if provider.doesSupportIpV6 == true %}
                     {{ okIcon }}
@@ -55,27 +60,27 @@ usedAcceptLanguage <input type="text" id="usedAcceptLanguage" name="usedAcceptLa
                     {{ errorIcon }}
                 {% endif %}
             </td>
+            
             <td>
                 {{ provider.usedFile }}
             </td>
+            
+            <td>
+                {% for field in provider.supportFields %}
+                    <strong>{{ field }}</strong><br />
+                {% endfor %}
+            </td>
+            
             <td>
                 {% if provider.result == false %}
                     {{ warningIcon }} No result found
                 {% else %}
-                    Latitude {{ provider.result.getLatitude }} <br />
-                    Longitude {{ provider.result.getLongitude }} <br />
-                    Timezone {{ provider.result.getTimezone }} <br />
-                    
-                    Country name {{ provider.result.getCountry.getName }} <br />
-                    Country code {{ provider.result.getCountry.getCode }} <br />
-                    
-                    Sublocality {{ provider.result.getSubLocality }} <br />
-                    Postal code {{ provider.result.getPostalCode }} <br />
-                    Locality {{ provider.result.getLocality }} <br />
-                    Streetname {{ provider.result.getStreetName }} <br />
-                    Streetnumber {{ provider.result.getStreetNumber }} <br />
+                    {% for field in provider.supportFields %}
+                        {{ provider.result[field] }}<br />
+                    {% endfor %}
                 {% endif %}
             </td>
+            
         </tr>
     {% endfor %}
     

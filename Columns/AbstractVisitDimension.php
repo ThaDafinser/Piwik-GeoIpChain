@@ -13,6 +13,8 @@ abstract class AbstractVisitDimension extends VisitDimension
 
     private $locationProvider;
 
+    private $ipToUse;
+
     public function getRequiredVisitFields()
     {
         return array(
@@ -41,15 +43,14 @@ abstract class AbstractVisitDimension extends VisitDimension
     protected function getLocationDetail($field, Visitor $visitor, Request $request)
     {
         $ipAddress = $this->getIpAddress($visitor, $request);
-        
-        $locale = \Locale::acceptFromHttp($request->getBrowserLanguage());
+        $locale = $this->getLocale($visitor, $request);
         
         $provider = $this->getLocationProvider();
         $provider->setLocale($locale);
         
         $result = $provider->geocode($ipAddress);
         
-        if(array_key_exists($field, $result) && $result[$field] !== null){
+        if (array_key_exists($field, $result) && $result[$field] !== null) {
             return $result[$field];
         }
         
@@ -65,6 +66,10 @@ abstract class AbstractVisitDimension extends VisitDimension
      */
     private function getIpAddress(Visitor $visitor, Request $request)
     {
+        if ($this->ipToUse !== null) {
+            return $this->ipToUse;
+        }
+        
         $privacyConfig = new PrivacyManagerConfig();
         
         $ip = $request->getIp();
@@ -73,8 +78,15 @@ abstract class AbstractVisitDimension extends VisitDimension
             $ip = $visitor->getVisitorColumn('location_ip');
         }
         
-        $ipAddress = IPUtils::binaryToStringIP($ip);
+        $ip = IPUtils::binaryToStringIP($ip);
         
-        return $ipAddress;
+        $this->ipToUse = $ip;
+        
+        return $ip;
+    }
+
+    private function getLocale(Visitor $visitor, Request $request)
+    {
+        return \Locale::acceptFromHttp($request->getBrowserLanguage());
     }
 }

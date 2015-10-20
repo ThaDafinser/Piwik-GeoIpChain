@@ -5,6 +5,7 @@ use Geocoder\Exception\NoResult;
 use Geocoder\Exception\UnsupportedOperation;
 use Piwik\Network;
 use Geocoder\Provider\Provider;
+use Piwik\Plugins\GeoIpChain\LocationProvider;
 
 class IpRangeGeoIp extends AbstractProvider implements Provider, FileAwareProvider
 {
@@ -28,6 +29,22 @@ class IpRangeGeoIp extends AbstractProvider implements Provider, FileAwareProvid
         }
         
         return false;
+    }
+    
+    public function getSupportedFields()
+    {
+        return [
+            LocationProvider::COUNTRY_CODE,
+            LocationProvider::COUNTRY_NAME,
+    
+            LocationProvider::SUB_LOCALITY,
+    
+            LocationProvider::POSTAL_CODE,
+            LocationProvider::LOCALITY,
+    
+            LocationProvider::LATITUDE,
+            LocationProvider::LONGITUDE,
+        ];
     }
     
     public function doesSupportIpV4()

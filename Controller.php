@@ -59,7 +59,8 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
                 'isWorking' => $provider->isWorking(),
                 'usedFile' => null,
                 'doesSupportIpV4' => $provider->doesSupportIpV4(),
-                'doesSupportIpV6' => $provider->doesSupportIpV6()
+                'doesSupportIpV6' => $provider->doesSupportIpV6(),
+                'supportFields' => $provider->getSupportedFields()
             ];
             
             if ($provider instanceof LocaleAwareProvider) {
@@ -80,7 +81,7 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
                     /* @var $firstResult \Geocoder\Model\Address */
                     $firstResult = $result->first();
                     
-                    $data['result'] = $firstResult;
+                    $data['result'] = $firstResult->toArray();
                 } catch (NoResult $ex) {} catch (UnsupportedOperation $ex) {}
             }
             

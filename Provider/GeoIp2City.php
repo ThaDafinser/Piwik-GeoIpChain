@@ -4,6 +4,7 @@ namespace Piwik\Plugins\GeoIpChain\Provider;
 use Geocoder\Exception\NoResult;
 use Geocoder\Exception\UnsupportedOperation;
 use Geocoder\Provider\Provider;
+use Piwik\Plugins\GeoIpChain\LocationProvider;
 
 class GeoIp2City extends AbstractProvider implements Provider, FileAwareProvider
 {
@@ -29,6 +30,22 @@ class GeoIp2City extends AbstractProvider implements Provider, FileAwareProvider
         }
         
         return true;
+    }
+
+    public function getSupportedFields()
+    {
+        return [
+            LocationProvider::COUNTRY_CODE,
+            LocationProvider::COUNTRY_NAME,
+            
+            LocationProvider::LOCALITY,
+            LocationProvider::POSTAL_CODE,
+            
+            LocationProvider::LATITUDE,
+            LocationProvider::LONGITUDE,
+            
+            LocationProvider::TIMEZONE
+        ];
     }
 
     /**

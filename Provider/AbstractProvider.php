@@ -6,6 +6,7 @@ use Geocoder\Exception\NoResult;
 
 abstract class AbstractProvider extends GeocoderAbstractProvider
 {
+
     const IPV4_EXAMPLE = '46.206.0.37';
 
     const IPV6_EXAMPLE = '2607:f0d0:1002:0051:0000:0000:0000:0004';
@@ -48,5 +49,10 @@ abstract class AbstractProvider extends GeocoderAbstractProvider
         }
         
         return false;
+    }
+
+    public function getSupportedFields()
+    {
+        return [];
     }
 }
