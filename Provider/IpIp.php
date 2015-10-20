@@ -4,12 +4,13 @@ namespace Piwik\Plugins\GeoIpChain\Provider;
 use Geocoder\Exception\NoResult;
 use Geocoder\Exception\UnsupportedOperation;
 use Geocoder\Provider\Provider;
+use Piwik\Plugins\GeoIpChain\Provider\Adapter\IpIp as IpIpAdapter;
 
-class Ip2LocationIpV4 extends AbstractProvider implements Provider, FileAwareProvider
+class IpIp extends AbstractProvider implements Provider, FileAwareProvider
 {
     use FileAwareTrait;
 
-    const DEFAULT_PATH = 'data/IP2LOCATION-LITE-DB11.BIN';
+    const DEFAULT_PATH = 'data/17monipdb.dat';
 
     private $adapter;
 
@@ -24,6 +25,7 @@ class Ip2LocationIpV4 extends AbstractProvider implements Provider, FileAwarePro
     {
         try {
             $adapter = $this->getAdapter();
+            $adapter->getFilePointer();
         } catch (\Exception $ex) {
             return false;
         }
@@ -36,12 +38,12 @@ class Ip2LocationIpV4 extends AbstractProvider implements Provider, FileAwarePro
      */
     public function getName()
     {
-        return 'Ip2LocationIpV4';
+        return 'IpIp';
     }
 
     /**
      *
-     * @return \Ip2Location\Database
+     * @return IpIpAdapter
      */
     public function getAdapter()
     {
@@ -49,7 +51,7 @@ class Ip2LocationIpV4 extends AbstractProvider implements Provider, FileAwarePro
             return $this->adapter;
         }
         
-        $this->adapter = new \Ip2Location\Database($this->getFile(), \Ip2Location\Database::FILE_IO);
+        $this->adapter = new IpIpAdapter($this->getFile());
         
         return $this->adapter;
     }
@@ -60,11 +62,11 @@ class Ip2LocationIpV4 extends AbstractProvider implements Provider, FileAwarePro
     public function geocode($address)
     {
         if (! filter_var($address, FILTER_VALIDATE_IP)) {
-            throw new UnsupportedOperation('The Ip2LocationIpV4 provider does not support street addresses, only IP addresses.');
+            throw new UnsupportedOperation('The IpIp provider does not support street addresses, only IP addresses.');
         }
         
         if (! filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-            throw new UnsupportedOperation(sprintf('The Ip2LocationIpV4 provider does not support IPv6 "%s".', $address));
+            throw new UnsupportedOperation(sprintf('The IpIp provider does not support IPv6 "%s".', $address));
         }
         
         if ('127.0.0.1' === $address) {
@@ -75,43 +77,38 @@ class Ip2LocationIpV4 extends AbstractProvider implements Provider, FileAwarePro
         
         try {
             $adapter = $this->getAdapter();
+            $result = $adapter->find($address);
         } catch (\Exception $ex) {
             // @todo better error message -> not working?
             throw new NoResult(sprintf('No results found for IP address "%s".', $address));
         }
         
-        $result = $adapter->lookup($address);
-        
-        if (! isset($result['countryCode']) || $result['countryCode'] === '-') {
+        if (! isset($result[0]) || $result[0] == '') {
             throw new NoResult(sprintf('No results found for IP address "%s".', $address));
         }
         
-        foreach ($result as $key => $value) {
-            if ($value === 'This parameter is unavailable in selected .BIN data file. Please upgrade.') {
-                $result[$key] = null;
-                continue;
-            }
-            
-            if ($value === '-') {
-                $result[$key] = null;
-                continue;
-            }
+        return $this->returnResults([
+            $this->fixEncoding(array_merge($this->getDefaults(), $this->getRealResult($result)))
+        ]);
+    }
+
+    private function getRealResult(array $result)
+    {
+        $countryName = null;
+        if (isset($result[0]) && $result[0] != '') {
+            $countryName = $result[0];
         }
         
-        return $this->returnResults([
-            $this->fixEncoding(array_merge($this->getDefaults(), array(
-                'latitude' => (isset($result['latitude']) ? $result['latitude'] : null),
-                'longitude' => (isset($result['longitude']) ? $result['longitude'] : null),
-                
-                'locality' => (isset($result['cityName']) ? $result['cityName'] : null),
-                'postalCode' => (isset($result['zipCode']) ? $result['zipCode'] : null),
-                
-                'subLocality' => (isset($result['regionName']) ? $result['regionName'] : null),
-                
-                'country' => (isset($result['countryName']) ? $result['countryName'] : null),
-                'countryCode' => (isset($result['countryCode']) ? $result['countryCode'] : null)
-            )))
-        ]);
+        $subLocality = null;
+        if (isset($result[1]) && $result[1] != '' && $result[0] != $result[1]) {
+            $subLocality = $result[1];
+        }
+        
+        return array(
+            'subLocality' => $subLocality,
+            
+            'country' => $countryName
+        );
     }
 
     /**
